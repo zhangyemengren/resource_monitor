@@ -37,9 +37,10 @@
             {
                 "fullscreen": false,
                 "resizable": true,
-                "title": "resource_monitor",
                 "width": 800,
-                "height": 600
+                "height": 600,
+                "hiddenTitle": true,
+                "titleBarStyle": "Overlay"
             }
         ]
     }

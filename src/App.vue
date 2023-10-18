@@ -4,10 +4,7 @@
 </script>
 
 <template>
-    <div class="flex flex-col p-2">
-        <div class="flex flex-row items-center justify-center">
-            <img src="/tauri.svg" class="w-20 h-20 logo tauri" alt="Tauri logo"/>
-            <img src="/vue.svg" class="w-20 h-20 logo vue" alt="Vue logo"/>
-        </div>
+    <div class="text-red-500">
+        header
     </div>
 </template>
