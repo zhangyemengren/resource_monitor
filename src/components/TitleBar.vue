@@ -1,12 +1,26 @@
 <script lang="ts" setup>
 import {invoke} from '@tauri-apps/api'
 import {ref} from "vue";
-
+const props = defineProps({
+    mode: {
+        type: String,
+        default: 'cpu'
+    },
+    setMode: {
+        type: Function,
+        default: () => {}
+    }
+})
 const cpuInfo = ref('');
 
 async function callRust() {
     cpuInfo.value = await invoke('test_cpu');
 }
+
+function setMode(value: string) {
+    props.setMode(value);
+}
+
 </script>
 
 <template>
@@ -17,24 +31,41 @@ async function callRust() {
         </div>
         <span class="isolate inline-flex rounded-md shadow-sm h-[30px]">
             <button
-                class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+                class="btn-l"
                 type="button"
-                @click="callRust"
-            >CPU</button>
+                @click="setMode('cpu')"
+            >
+                CPU
+            </button>
             <button
-                class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-                type="button">内存</button>
-  <button
-      class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-      type="button">能耗</button>
+                class="btn-m"
+                type="button"
+                @click="setMode('mem')"
+            >
+                内存
+            </button>
             <button
-                class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-                type="button">磁盘</button>
-  <button
-      class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
-      type="button">网络</button>
-
-</span>
+                class="btn-m"
+                type="button"
+                @click="setMode('energy')"
+            >
+              能耗
+            </button>
+            <button
+               class="btn-m"
+               type="button"
+               @click="setMode('disk')"
+            >
+               磁盘
+            </button>
+            <button
+                class="btn-r"
+                type="button"
+                @click="setMode('net')"
+            >
+                网络
+            </button>
+        </span>
         <div>
             {{ cpuInfo }}
         </div>
@@ -42,5 +73,15 @@ async function callRust() {
 </template>
 
 <style scoped>
+.btn-l {
+    @apply relative inline-flex items-center rounded-l-md bg-slate-500 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-slate-300 focus:z-10;
+}
 
+.btn-m {
+    @apply relative inline-flex items-center -ml-px bg-slate-500 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-slate-300 focus:z-10;
+}
+
+.btn-r {
+    @apply relative inline-flex items-center -ml-px rounded-r-md bg-slate-500 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-slate-300 focus:z-10;
+}
 </style>
