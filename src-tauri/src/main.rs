@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod cpu;
+mod process;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -10,8 +11,9 @@ fn greet(name: &str) -> String {
 }
 
 fn main() {
+
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, cpu::test_cpu])
+        .invoke_handler(tauri::generate_handler![greet, cpu::test_cpu, process::sys_info])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
