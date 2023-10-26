@@ -13,10 +13,6 @@ const props = defineProps({
 })
 const cpuInfo = ref('');
 
-async function callRust() {
-    cpuInfo.value = await invoke('test_cpu');
-}
-
 function setMode(value: string) {
     props.setMode(value);
 }

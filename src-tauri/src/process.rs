@@ -1,4 +1,4 @@
-use sysinfo::{Pid, Process, ProcessExt, System, SystemExt};
+use sysinfo::{Process, ProcessExt, System, SystemExt};
 
 #[derive(serde::Serialize)]
 pub struct MyProcess {
@@ -29,7 +29,7 @@ pub fn sys_info() -> Vec<MyProcess>{
     sys.refresh_all();
     let h = sys.processes();
     let mut v = vec![];
-    h.iter().for_each(|(pid, p)| {
+    h.iter().for_each(|(_, p)| {
         v.push(MyProcess::from(p));
     });
     v
