@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
+    ATable: typeof import('ant-design-vue/es')['Table']
     TitleBar: typeof import('./src/components/TitleBar.vue')['default']
   }
 }
