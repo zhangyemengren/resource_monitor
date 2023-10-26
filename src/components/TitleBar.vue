@@ -30,13 +30,13 @@ function setMode(value: string) {
             <p class="text-xs">所有进程</p>
         </div>
 
-        <a-button-group type="primary">
-            <a-button @click="setMode('cpu')"> CPU </a-button>
-            <a-button @click="setMode('mem')"> 内存 </a-button>
-            <a-button @click="setMode('energy')"> 能耗 </a-button>
-            <a-button @click="setMode('disk')"> 磁盘 </a-button>
-            <a-button @click="setMode('net')"> 网络 </a-button>
-        </a-button-group>
+        <a-radio-group v-model:value="size">
+            <a-radio-button @click="setMode('cpu')"> CPU </a-radio-button>
+            <a-radio-button @click="setMode('mem')"> 内存 </a-radio-button>
+            <a-radio-button @click="setMode('energy')"> 能耗 </a-radio-button>
+            <a-radio-button @click="setMode('disk')"> 磁盘 </a-radio-button>
+            <a-radio-button @click="setMode('net')"> 网络 </a-radio-button>
+        </a-radio-group>
         <div>
             {{ cpuInfo }}
         </div>

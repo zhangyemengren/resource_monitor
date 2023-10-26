@@ -16,19 +16,16 @@ async function callSysInfo() {
     console.log(value);
 }
 onMounted(() => {
-    document.body.setAttribute('arco-theme', 'dark');
     callSysInfo();
 })
 
 </script>
 
 <template>
-    <a-layout>
-        <a-layout-header>
-            <TitleBar :mode="mode" :setMode="setMode"/>
-        </a-layout-header>
-        <a-layout-content>
-            {{ mode }}
-        </a-layout-content>
-    </a-layout>
+    <div>
+        <TitleBar :mode="mode" :setMode="setMode"/>
+    </div>
+    <div>
+        {{ mode }}
+    </div>
 </template>
