@@ -13,6 +13,11 @@ const columns = ref([
         key: 'name',
     },
     {
+        title: '%CPU',
+        dataIndex: 'cpuUsage',
+        key: 'name',
+    },
+    {
         title: 'PID',
         dataIndex: 'pid',
         key: 'pid',
@@ -39,6 +44,7 @@ onMounted(() => {
     <TitleBar :mode="mode" :setMode="setMode"/>
     <div>
         {{ mode }}
+        <button @click="callSysInfo">手动刷新</button>
     </div>
     <div>
         <a-table :dataSource="tableData" :columns="columns" />
