@@ -36,9 +36,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div>
-        <TitleBar :mode="mode" :setMode="setMode"/>
-    </div>
+    <TitleBar :mode="mode" :setMode="setMode"/>
     <div>
         {{ mode }}
     </div>
