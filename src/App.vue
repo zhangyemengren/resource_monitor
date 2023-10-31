@@ -15,7 +15,17 @@ const columns = ref([
     {
         title: '%CPU',
         dataIndex: 'cpuUsage',
-        key: 'name',
+        key: 'cpuUsage',
+    },
+    {
+        title: '运行时间',
+        dataIndex: 'runTimeStr',
+        key: 'runTimeStr',
+    },
+    {
+        title: '运行时间s',
+        dataIndex: 'runTime',
+        key: 'runTime',
     },
     {
         title: 'PID',
