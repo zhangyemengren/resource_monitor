@@ -1,7 +1,7 @@
 use crate::GlobalSystem;
-use sysinfo::{Process, ProcessExt, SystemExt};
+use sysinfo::{ProcessExt, SystemExt, UserExt};
 
-#[derive(serde::Serialize, Debug)]
+#[derive(serde::Serialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct MyProcess {
     pid: usize,
@@ -9,27 +9,48 @@ pub struct MyProcess {
     cpu_usage: f64,
     run_time: u64,
     run_time_str: String,
+    user_name: String,
 }
 
-impl From<&Process> for MyProcess {
-    fn from(process: &Process) -> Self {
-        let run_time = process.run_time();
+impl MyProcess {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn pid(mut self, pid: usize) -> Self {
+        self.pid = pid;
+        self
+    }
+    pub fn name(mut self, name: String) -> Self {
+        self.name = name;
+        self
+    }
+    pub fn cpu_usage(mut self, cpu_usage: f64) -> Self {
+        self.cpu_usage = cpu_usage;
+        self
+    }
+    pub fn run_time(mut self, run_time: u64) -> Self {
         let run_time_str = format!(
             "{}:{:02}:{:02}",
             run_time / 3600,
             run_time % 3600 / 60,
             run_time % 60
         );
-        let cpu_usage = (process.cpu_usage() as f64 * 10.0).round() / 10.0;
-        if process.name().to_string() == "clion" {
-            println!("{} {}", process.start_time(), process.run_time());
-        }
+        self.run_time = run_time;
+        self.run_time_str = run_time_str;
+        self
+    }
+    pub fn user_name(mut self, user_name: String) -> Self {
+        self.user_name = user_name;
+        self
+    }
+    pub fn build(self) -> Self {
         Self {
-            pid: process.pid().into(),
-            name: process.name().to_string(),
-            cpu_usage,
-            run_time,
-            run_time_str,
+            pid: self.pid,
+            name: self.name,
+            cpu_usage: self.cpu_usage,
+            run_time: self.run_time,
+            run_time_str: self.run_time_str,
+            user_name: self.user_name,
         }
     }
 }
@@ -38,11 +59,29 @@ impl From<&Process> for MyProcess {
 pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
     let mut sys = sys.0.lock().unwrap();
     sys.refresh_all();
-    sys.refresh_disks();
     let h = sys.processes();
     let mut v = vec![];
     h.iter().for_each(|(_, p)| {
-        let my_process = MyProcess::from(p);
+        let pid: usize = p.pid().into();
+        let name = p.name().to_string();
+        let cpu_usage = (p.cpu_usage() as f64 * 10.0).round() / 10.0;
+        let run_time = p.run_time();
+        let user_name = if let Some(user_id) = p.user_id() {
+            if let Some(user) = sys.get_user_by_id(user_id) {
+                user.name().to_string()
+            } else {
+                String::new()
+            }
+        } else {
+            String::new()
+        };
+        let my_process = MyProcess::new()
+            .pid(pid)
+            .name(name)
+            .cpu_usage(cpu_usage)
+            .run_time(run_time)
+            .user_name(user_name)
+            .build();
         v.push(my_process);
     });
     v.sort_by(|a, b| a.cpu_usage.partial_cmp(&b.cpu_usage).unwrap().reverse());

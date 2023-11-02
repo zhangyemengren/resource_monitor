@@ -28,6 +28,11 @@ const columns = ref([
         key: 'runTime',
     },
     {
+        title: '用户',
+        dataIndex: 'userName',
+        key: 'userName',
+    },
+    {
         title: 'PID',
         dataIndex: 'pid',
         key: 'pid',
@@ -56,7 +61,7 @@ onMounted(() => {
         {{ mode }}
         <button @click="callSysInfo">手动刷新</button>
     </div>
-    <div>
-        <a-table :dataSource="tableData" :columns="columns" />
+    <div class="flex-grow overflow-x-scroll">
+        <a-table :dataSource="tableData" :columns="columns" :pagination="false"/>
     </div>
 </template>
