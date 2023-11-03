@@ -1,3 +1,4 @@
+use std::time::SystemTime;
 use crate::GlobalSystem;
 use sysinfo::{ProcessExt, SystemExt, UserExt};
 
@@ -28,7 +29,12 @@ impl MyProcess {
         self.cpu_usage = cpu_usage;
         self
     }
-    pub fn run_time(mut self, run_time: u64) -> Self {
+    pub fn run_time(mut self, start_time: u64) -> Self {
+        let now = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        let run_time = now - start_time;
         let run_time_str = format!(
             "{}:{:02}:{:02}",
             run_time / 3600,
@@ -65,7 +71,7 @@ pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
         let pid: usize = p.pid().into();
         let name = p.name().to_string();
         let cpu_usage = (p.cpu_usage() as f64 * 10.0).round() / 10.0;
-        let run_time = p.run_time();
+        let start_time = p.start_time();
         let user_name = if let Some(user_id) = p.user_id() {
             if let Some(user) = sys.get_user_by_id(user_id) {
                 user.name().to_string()
@@ -79,7 +85,7 @@ pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
             .pid(pid)
             .name(name)
             .cpu_usage(cpu_usage)
-            .run_time(run_time)
+            .run_time(start_time)
             .user_name(user_name)
             .build();
         v.push(my_process);

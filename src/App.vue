@@ -23,11 +23,6 @@ const columns = ref([
         key: 'runTimeStr',
     },
     {
-        title: '运行时间s',
-        dataIndex: 'runTime',
-        key: 'runTime',
-    },
-    {
         title: '用户',
         dataIndex: 'userName',
         key: 'userName',
