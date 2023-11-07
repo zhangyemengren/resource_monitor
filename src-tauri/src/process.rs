@@ -1,5 +1,5 @@
-use std::time::SystemTime;
 use crate::GlobalSystem;
+use std::time::SystemTime;
 use sysinfo::{ProcessExt, SystemExt, UserExt};
 
 #[derive(serde::Serialize, Debug, Default)]
@@ -11,6 +11,7 @@ pub struct MyProcess {
     run_time: u64,
     run_time_str: String,
     user_name: String,
+    memory: u64,
 }
 
 impl MyProcess {
@@ -49,6 +50,10 @@ impl MyProcess {
         self.user_name = user_name;
         self
     }
+    pub fn memory(mut self, memory: u64) -> Self {
+        self.memory = memory;
+        self
+    }
     pub fn build(self) -> Self {
         Self {
             pid: self.pid,
@@ -57,6 +62,7 @@ impl MyProcess {
             run_time: self.run_time,
             run_time_str: self.run_time_str,
             user_name: self.user_name,
+            memory: self.memory,
         }
     }
 }
@@ -68,10 +74,6 @@ pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
     let h = sys.processes();
     let mut v = vec![];
     h.iter().for_each(|(_, p)| {
-        let pid: usize = p.pid().into();
-        let name = p.name().to_string();
-        let cpu_usage = (p.cpu_usage() as f64 * 10.0).round() / 10.0;
-        let start_time = p.start_time();
         let user_name = if let Some(user_id) = p.user_id() {
             if let Some(user) = sys.get_user_by_id(user_id) {
                 user.name().to_string()
@@ -82,11 +84,12 @@ pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
             String::new()
         };
         let my_process = MyProcess::new()
-            .pid(pid)
-            .name(name)
-            .cpu_usage(cpu_usage)
-            .run_time(start_time)
+            .pid(p.pid().into())
+            .name(p.name().to_string())
+            .cpu_usage((p.cpu_usage() as f64 * 10.0).round() / 10.0)
+            .run_time(p.start_time())
             .user_name(user_name)
+            .memory(p.memory())
             .build();
         v.push(my_process);
     });

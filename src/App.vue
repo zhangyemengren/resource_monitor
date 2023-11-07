@@ -27,6 +27,11 @@ const columns = ref([
         key: 'userName',
     },
     {
+        title: '内存',
+        dataIndex: 'memory',
+        key: 'memory',
+    },
+    {
         title: 'PID',
         dataIndex: 'pid',
         key: 'pid',
