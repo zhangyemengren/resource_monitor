@@ -5,7 +5,6 @@ import {ref, onMounted} from "vue";
 import {invoke} from '@tauri-apps/api'
 import TitleBar from "./components/TitleBar.vue";
 
-const mode = ref('cpu');
 const columns = ref([
     {
         title: '进程名称',
@@ -35,10 +34,6 @@ const columns = ref([
 ]);
 const tableData = ref([]);
 
-function setMode(value: string) {
-    console.log(value)
-    mode.value = value;
-}
 async function callSysInfo() {
     const value = await invoke('sys_info');
     tableData.value = value;
@@ -51,7 +46,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <TitleBar :mode="mode" :setMode="setMode"/>
+    <TitleBar />
     <div>
         {{ mode }}
         <button @click="callSysInfo">手动刷新</button>
