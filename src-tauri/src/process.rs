@@ -12,6 +12,7 @@ pub struct MyProcess {
     run_time_str: String,
     user_name: String,
     memory: u64,
+    memory_str: String,
 }
 
 impl MyProcess {
@@ -51,7 +52,16 @@ impl MyProcess {
         self
     }
     pub fn memory(mut self, memory: u64) -> Self {
+        let memory_str;
+        if memory > 1024_u64.pow(3) {
+            let round = (memory as f32 / 1024.0_f32.powf(3.0) * 100.0).round() / 100.0;
+            memory_str = format!("{} GB", round);
+        } else {
+            let round = (memory as f32 / 1024.0_f32.powf(2.0) * 10.0).round() / 10.0;
+            memory_str = format!("{} MB", round);
+        }
         self.memory = memory;
+        self.memory_str = memory_str;
         self
     }
     pub fn build(self) -> Self {
@@ -63,6 +73,7 @@ impl MyProcess {
             run_time_str: self.run_time_str,
             user_name: self.user_name,
             memory: self.memory,
+            memory_str: self.memory_str,
         }
     }
 }

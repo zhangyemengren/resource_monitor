@@ -28,8 +28,8 @@ const columns = ref([
     },
     {
         title: '内存',
-        dataIndex: 'memory',
-        key: 'memory',
+        dataIndex: 'memoryStr',
+        key: 'memoryStr',
     },
     {
         title: 'PID',
