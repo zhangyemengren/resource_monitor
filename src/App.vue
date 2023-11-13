@@ -32,6 +32,16 @@ const columns = ref([
         key: 'memoryStr',
     },
     {
+        title: '读取字节',
+        dataIndex: 'readBytes',
+        key: 'readBytes',
+    },
+    {
+        title: '写入字节',
+        dataIndex: 'writtenBytes',
+        key: 'writtenBytes',
+    },
+    {
         title: 'PID',
         dataIndex: 'pid',
         key: 'pid',

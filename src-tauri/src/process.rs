@@ -1,6 +1,6 @@
 use crate::GlobalSystem;
 use std::time::SystemTime;
-use sysinfo::{ProcessExt, SystemExt, UserExt};
+use sysinfo::{DiskUsage, ProcessExt, SystemExt, UserExt};
 
 #[derive(serde::Serialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
@@ -13,6 +13,8 @@ pub struct MyProcess {
     user_name: String,
     memory: u64,
     memory_str: String,
+    read_bytes: u64,
+    written_bytes: u64,
 }
 
 impl MyProcess {
@@ -28,6 +30,7 @@ impl MyProcess {
         self
     }
     pub fn cpu_usage(mut self, cpu_usage: f64) -> Self {
+        let cpu_usage = (cpu_usage * 10.0).round() / 10.0;
         self.cpu_usage = cpu_usage;
         self
     }
@@ -51,7 +54,7 @@ impl MyProcess {
         self.user_name = user_name;
         self
     }
-    pub fn memory(mut self, memory: u64) -> Self {
+    pub fn memory_usage(mut self, memory: u64) -> Self {
         let memory_str;
         if memory > 1024_u64.pow(3) {
             let round = (memory as f32 / 1024.0_f32.powf(3.0) * 100.0).round() / 100.0;
@@ -64,6 +67,11 @@ impl MyProcess {
         self.memory_str = memory_str;
         self
     }
+    pub fn disk_usage(mut self, disk_usage: DiskUsage) -> Self {
+        self.read_bytes = disk_usage.read_bytes;
+        self.written_bytes = disk_usage.written_bytes;
+        self
+    }
     pub fn build(self) -> Self {
         Self {
             pid: self.pid,
@@ -74,6 +82,8 @@ impl MyProcess {
             user_name: self.user_name,
             memory: self.memory,
             memory_str: self.memory_str,
+            read_bytes: self.read_bytes,
+            written_bytes: self.written_bytes,
         }
     }
 }
@@ -97,10 +107,11 @@ pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
         let my_process = MyProcess::new()
             .pid(p.pid().into())
             .name(p.name().to_string())
-            .cpu_usage((p.cpu_usage() as f64 * 10.0).round() / 10.0)
+            .cpu_usage(p.cpu_usage().into())
             .run_time(p.start_time())
             .user_name(user_name)
-            .memory(p.memory())
+            .memory_usage(p.memory())
+            .disk_usage(p.disk_usage())
             .build();
         v.push(my_process);
     });
