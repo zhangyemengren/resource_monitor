@@ -118,3 +118,9 @@ pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
     v.sort_by(|a, b| a.cpu_usage.partial_cmp(&b.cpu_usage).unwrap().reverse());
     v
 }
+
+#[tauri::command]
+pub fn find_process(sys: tauri::State<'_, GlobalSystem>, search: String) -> Vec<MyProcess> {
+    let all = sys_info(sys);
+    all.into_iter().filter(|s| s.name.contains(&search)).collect()
+}

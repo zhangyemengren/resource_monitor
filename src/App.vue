@@ -2,7 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import {ref, onMounted} from "vue";
-import {invoke} from '@tauri-apps/api'
+import {invoke} from "@tauri-apps/api";
 import TitleBar from "./components/TitleBar.vue";
 
 const columns = ref([
@@ -54,6 +54,11 @@ async function callSysInfo() {
     tableData.value = value;
     console.log(value);
 }
+async function callFindProcess(){
+    const value = await invoke('find_process', {search: '企业'});
+    tableData.value = value;
+    console.log(value);
+}
 onMounted(() => {
     callSysInfo();
 })
@@ -63,8 +68,8 @@ onMounted(() => {
 <template>
     <TitleBar />
     <div>
-        {{ mode }}
         <button @click="callSysInfo">手动刷新</button>
+        <button @click="callFindProcess">固定查找"企业"</button>
     </div>
     <div class="flex-grow overflow-x-scroll">
         <a-table :dataSource="tableData" :columns="columns" :pagination="false"/>

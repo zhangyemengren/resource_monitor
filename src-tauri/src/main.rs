@@ -1,7 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod cpu;
 mod process;
 
 use std::sync::Mutex;
@@ -19,7 +18,7 @@ fn main() {
 
     tauri::Builder::default()
         .manage(GlobalSystem::new_all())
-        .invoke_handler(tauri::generate_handler![process::sys_info])
+        .invoke_handler(tauri::generate_handler![process::sys_info, process::find_process])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
