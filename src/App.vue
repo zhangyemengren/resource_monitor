@@ -106,10 +106,6 @@ onUnmounted(() => {
 <template>
     <TitleBar :callFindProcess="callFindProcess" />
     <div class="relative">
-        <div>
-            <button @click="callSysInfo">手动刷新</button>
-            <button @click="callFindProcess">固定查找"企业"</button>
-        </div>
         <div class="flex-grow overflow-x-scroll">
             <a-table id="list-table" :dataSource="tableData" :columns="columns" :pagination="false"/>
         </div>
