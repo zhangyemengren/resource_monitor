@@ -22,11 +22,6 @@ const columns = ref([
         key: 'runTimeStr',
     },
     {
-        title: '用户',
-        dataIndex: 'userName',
-        key: 'userName',
-    },
-    {
         title: '内存',
         dataIndex: 'memoryStr',
         key: 'memoryStr',
@@ -40,6 +35,11 @@ const columns = ref([
         title: '写入字节',
         dataIndex: 'writtenBytes',
         key: 'writtenBytes',
+    },
+    {
+        title: '用户',
+        dataIndex: 'userName',
+        key: 'userName',
     },
     {
         title: 'PID',
@@ -105,8 +105,8 @@ onUnmounted(() => {
 
 <template>
     <TitleBar :callFindProcess="callFindProcess" />
-    <div class="relative">
-        <div class="flex-grow overflow-x-scroll">
+    <div class="relative flex-grow overflow-x-scroll">
+        <div>
             <a-table id="list-table" :dataSource="tableData" :columns="columns" :pagination="false"/>
         </div>
         <div class="menu" :style="menuStyle" @click="onKill">kill</div>
