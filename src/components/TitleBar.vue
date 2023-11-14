@@ -1,10 +1,12 @@
 <script lang="ts" setup>
     import {ref, watch} from "vue";
     import {debounce} from "../utils.ts";
+    const props = defineProps(['callFindProcess'])
     const search = ref("");
 
     const onSearch = debounce((value) => {
         console.log(value);
+        props.callFindProcess(value);
     }, 200);
 
     watch(search, onSearch)

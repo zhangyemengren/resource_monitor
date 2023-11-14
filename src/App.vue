@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import {ref, onMounted} from "vue";
+import {ref, onMounted, onUnmounted} from "vue";
 import {invoke} from "@tauri-apps/api";
 import TitleBar from "./components/TitleBar.vue";
 
@@ -48,30 +48,77 @@ const columns = ref([
     },
 ]);
 const tableData = ref([]);
+const menuStyle = ref({
+    display: "none",
+    left: 0,
+    top: 0,
+});
+const choosePid = ref(0);
 
 async function callSysInfo() {
     const value = await invoke('sys_info');
     tableData.value = value;
     console.log(value);
 }
-async function callFindProcess(){
-    const value = await invoke('find_process', {search: '企业'});
+async function callFindProcess(search){
+    const value = await invoke('find_process', {search});
     tableData.value = value;
     console.log(value);
 }
+function onContextMenu(e){
+    e.preventDefault();
+    const tr = e.target.parentNode;
+    const tds = tr.querySelectorAll("td");
+    const target = tds[tds.length - 1];
+    const pid = target.innerText;
+    menuStyle.value = {
+        display: "block",
+        left: e.pageX + "px",
+        top: e.pageY + "px",
+    };
+    choosePid.value = pid;
+}
+function onKill() {
+    console.log(choosePid.value);
+    invoke('kill_process', {pid: Number(choosePid.value)}).catch(e => {
+        console.log(e);
+    });
+}
+function resetMenu() {
+    menuStyle.value = {
+        display: "none",
+        left: 0,
+        top: 0,
+    };
+}
 onMounted(() => {
     callSysInfo();
+    document.querySelector("#list-table").addEventListener("contextmenu", onContextMenu);
+    document.addEventListener("click", resetMenu);
+})
+onUnmounted(() => {
+    document.querySelector("#list-table").removeEventListener("contextmenu", onContextMenu);
+    document.removeEventListener("click", resetMenu);
 })
 
 </script>
 
 <template>
-    <TitleBar />
-    <div>
-        <button @click="callSysInfo">手动刷新</button>
-        <button @click="callFindProcess">固定查找"企业"</button>
-    </div>
-    <div class="flex-grow overflow-x-scroll">
-        <a-table :dataSource="tableData" :columns="columns" :pagination="false"/>
+    <TitleBar :callFindProcess="callFindProcess" />
+    <div class="relative">
+        <div>
+            <button @click="callSysInfo">手动刷新</button>
+            <button @click="callFindProcess">固定查找"企业"</button>
+        </div>
+        <div class="flex-grow overflow-x-scroll">
+            <a-table id="list-table" :dataSource="tableData" :columns="columns" :pagination="false"/>
+        </div>
+        <div class="menu" :style="menuStyle" @click="onKill">kill</div>
     </div>
 </template>
+
+<style scoped>
+    .menu{
+        @apply fixed w-[100px] h-[20px] bg-red-500;
+    }
+</style>

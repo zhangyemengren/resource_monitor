@@ -18,7 +18,7 @@ fn main() {
 
     tauri::Builder::default()
         .manage(GlobalSystem::new_all())
-        .invoke_handler(tauri::generate_handler![process::sys_info, process::find_process])
+        .invoke_handler(tauri::generate_handler![process::sys_info, process::find_process, process::kill_process])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

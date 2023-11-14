@@ -1,6 +1,6 @@
 use crate::GlobalSystem;
 use std::time::SystemTime;
-use sysinfo::{DiskUsage, ProcessExt, SystemExt, UserExt};
+use sysinfo::{DiskUsage, Pid, ProcessExt, SystemExt, UserExt};
 
 #[derive(serde::Serialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
@@ -123,4 +123,12 @@ pub fn sys_info(sys: tauri::State<'_, GlobalSystem>) -> Vec<MyProcess> {
 pub fn find_process(sys: tauri::State<'_, GlobalSystem>, search: String) -> Vec<MyProcess> {
     let all = sys_info(sys);
     all.into_iter().filter(|s| s.name.contains(&search)).collect()
+}
+
+#[tauri::command]
+pub fn kill_process(sys: tauri::State<'_, GlobalSystem>, pid: usize){
+    let sys = sys.0.lock().unwrap();
+    if let Some(process) = sys.process(Pid::from(pid)) {
+        process.kill();
+    }
 }
